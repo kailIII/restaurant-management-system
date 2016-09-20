@@ -1,11 +1,14 @@
 package com.hotelvictoria.restaurant.management.models;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.UUID;
 
+@Data
 @Entity
 public class Manager {
     @Id
@@ -19,19 +22,5 @@ public class Manager {
 
     public Manager(String name) {
         this.name = name;
-    }
-
-    /**
-     * @return Manager unique ID
-     */
-    public UUID getId() {
-        return id;
-    }
-
-    /**
-     * @return Name of the manager
-     */
-    public String getName() {
-        return name;
     }
 }
