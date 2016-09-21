@@ -1,11 +1,10 @@
-package com.hotelvictoria.restaurant.management.models;
+package com.hotelvictoria.restaurants.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.UUID;
 
 @Data
@@ -16,6 +15,10 @@ public class Restaurant {
     private UUID id;
 
     private String name;
+
+    @OneToMany(mappedBy = "restaurant")
+    @JsonIgnoreProperties("restaurant")
+    private Collection<Table> tables;
 
     public Restaurant() {
     }

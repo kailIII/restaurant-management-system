@@ -1,6 +1,6 @@
-package com.hotelvictoria.restaurant.management.repositories;
+package com.hotelvictoria.restaurants.repositories;
 
-import com.hotelvictoria.restaurant.management.models.Restaurant;
+import com.hotelvictoria.restaurants.models.Restaurant;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package com.hotelvictoria.restaurant.management.controllers.api;
+package com.hotelvictoria.restaurants.controllers.api;
 
-import com.hotelvictoria.restaurant.management.models.Waiter;
-import com.hotelvictoria.restaurant.management.repositories.WaiterRepository;
+import com.hotelvictoria.restaurants.models.Waiter;
+import com.hotelvictoria.restaurants.repositories.WaiterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +20,6 @@ public class WaiterController {
 
     @PostMapping("/api/v1/waiters")
     public Waiter postWaiter(@RequestParam("name") String name) {
-        Waiter waiter = new Waiter(name);
-
-        return waiterRepository.save(waiter);
+        return waiterRepository.save(new Waiter(name));
     }
 }

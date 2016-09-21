@@ -1,4 +1,4 @@
-package com.hotelvictoria.restaurant.management;
+package com.hotelvictoria.restaurants;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class RestaurantManagerApplicationTests {
+public class RestaurantsApplicationTests {
 
 	@Test
 	public void contextLoads() {

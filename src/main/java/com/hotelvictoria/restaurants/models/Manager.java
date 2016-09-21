@@ -1,4 +1,4 @@
-package com.hotelvictoria.restaurant.management.models;
+package com.hotelvictoria.restaurants.models;
 
 import lombok.Data;
 

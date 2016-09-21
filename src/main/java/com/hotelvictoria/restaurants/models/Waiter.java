@@ -1,6 +1,7 @@
-package com.hotelvictoria.restaurant.management.models;
+package com.hotelvictoria.restaurants.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Waiter {
     private String name;
 
     @OneToMany(mappedBy = "waiter")
+    @JsonIgnoreProperties("waiter")
     private Collection<Table> tables;
 
     public Waiter() {
