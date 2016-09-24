@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Manager from './pages/Manager';
 import Waiter from './pages/Waiter';
 import ManageRestaurant from './pages/ManageRestaurant';
+import ManageTable from './pages/ManageTable';
 
 render(
     <Router history={browserHistory}>
@@ -13,6 +14,7 @@ render(
         <Route path="manager">
             <IndexRoute component={Manager} />
             <Route path="manage-restaurant/:restaurantId" component={ManageRestaurant} />
+            <Route path="manage-table/:tableId" component={ManageTable} />
         </Route>
         <Route path="waiter" component={Waiter} />
     </Router>,

@@ -9,4 +9,9 @@ public class HomeController {
     public String index() {
         return "index";
     }
+
+    @GetMapping("/manager/**/*")
+    public String manager() {
+        return "index";
+    }
 }

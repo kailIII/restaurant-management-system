@@ -31,7 +31,11 @@ class ManagerRestaurant extends React.Component {
             <div>
                 <h1>{this.state.name}</h1>
                 <h2>Tables</h2>
-                {this.state.tables.map(table => <Link key={table.id} to={`/manager/add-waiter-to-table/${table.id}`}>{table.name}</Link>)}
+                {this.state.tables.map(table => (
+                    <div key={table.id}>
+                        <Link to={`/manager/manage-table/${table.id}`}>{table.name}</Link>
+                    </div>
+                ))}
             </div>
         )
     }

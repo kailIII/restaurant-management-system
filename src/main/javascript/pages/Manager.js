@@ -24,7 +24,8 @@ class Manager extends React.Component {
         return (
             <div>
                 <h1>Manager</h1>
-                {this.state.restaurants.map(restaurant => <Link key={restaurant.id} to={`/manager/manage-restaurant/${restaurant.id}`}>{restaurant.name}</Link>)}
+                <p>Select a Restaurant</p>
+                {this.state.restaurants.map(restaurant => <p key={restaurant.id}><Link to={`/manager/manage-restaurant/${restaurant.id}`}>{restaurant.name}</Link></p>)}
             </div>
         )
     }
