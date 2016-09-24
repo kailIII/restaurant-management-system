@@ -27805,7 +27805,12 @@
 	                _react2.default.createElement(
 	                    'h2',
 	                    null,
-	                    'Tables'
+	                    'Table Assignments'
+	                ),
+	                _react2.default.createElement(
+	                    'p',
+	                    null,
+	                    'Select a table to update which waiter is assigned to it.'
 	                ),
 	                this.state.tables.map(function (table) {
 	                    return _react2.default.createElement(
@@ -27814,7 +27819,9 @@
 	                        _react2.default.createElement(
 	                            _reactRouter.Link,
 	                            { to: '/manager/manage-table/' + table.id },
-	                            table.name
+	                            table.name,
+	                            ' - ',
+	                            table.waiter === null ? 'unassigned' : table.waiter.name
 	                        )
 	                    );
 	                })
@@ -27898,6 +27905,24 @@
 	            });
 	        }
 	    }, {
+	        key: 'removeWaiterFromTable',
+	        value: function removeWaiterFromTable(tableId) {
+	            var formData = new FormData();
+	            formData.append('_method', 'DELETE');
+
+	            fetch('/api/v1/tables/' + tableId + '/waiter', {
+	                method: 'POST',
+	                body: formData
+	            }).then(function (response) {
+	                if (response.status === 204) {
+	                    return true;
+	                }
+	                return response.json();
+	            }).then(function (json) {
+	                _reactRouter.browserHistory.goBack();
+	            });
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this3 = this;
@@ -27909,6 +27934,13 @@
 	                    'h1',
 	                    null,
 	                    'Assign A Waiter To This Table'
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { onClick: function onClick(event) {
+	                            return _this3.removeWaiterFromTable(_this3.props.params.tableId);
+	                        } },
+	                    'Unassigned'
 	                ),
 	                this.state.waiters.map(function (waiter) {
 	                    return _react2.default.createElement(

@@ -27,6 +27,7 @@ public class TableWaiterController {
     @DeleteMapping("/api/v1/tables/{tableId}/waiter")
     public ResponseEntity<?> deleteTableWaiter(@PathVariable("tableId") Table table) {
         table.setWaiter(null);
+        tableRepository.save(table);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

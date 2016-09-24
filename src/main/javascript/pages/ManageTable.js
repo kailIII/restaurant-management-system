@@ -34,10 +34,30 @@ class ManageTable extends React.Component {
             })
     }
 
+    removeWaiterFromTable(tableId) {
+        let formData = new FormData();
+        formData.append('_method', 'DELETE');
+
+        fetch(`/api/v1/tables/${tableId}/waiter`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.status === 204) {
+                    return true;
+                }
+                return response.json();
+            })
+            .then(json => {
+                browserHistory.goBack()
+            })
+    }
+
     render() {
         return (
             <div>
                 <h1>Assign A Waiter To This Table</h1>
+                <div onClick={event => this.removeWaiterFromTable(this.props.params.tableId)}>Unassigned</div>
                 {this.state.waiters.map(waiter => (
                     <div key={waiter.id} onClick={event => this.assignWaiterToTable(waiter.id, this.props.params.tableId)}>
                         {waiter.name}

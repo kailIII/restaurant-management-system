@@ -30,10 +30,11 @@ class ManagerRestaurant extends React.Component {
         return (
             <div>
                 <h1>{this.state.name}</h1>
-                <h2>Tables</h2>
+                <h2>Table Assignments</h2>
+                <p>Select a table to update which waiter is assigned to it.</p>
                 {this.state.tables.map(table => (
                     <div key={table.id}>
-                        <Link to={`/manager/manage-table/${table.id}`}>{table.name}</Link>
+                        <Link to={`/manager/manage-table/${table.id}`}>{table.name} - {table.waiter === null ? 'unassigned' : table.waiter.name}</Link>
                     </div>
                 ))}
             </div>

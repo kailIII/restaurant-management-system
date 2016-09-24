@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Data
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Waiter {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
