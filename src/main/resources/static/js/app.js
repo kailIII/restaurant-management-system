@@ -27886,7 +27886,6 @@
 	        key: 'assignWaiterToTable',
 	        value: function assignWaiterToTable(waiterId, tableId) {
 	            var formData = new FormData();
-	            formData.append('_method', 'PUT');
 	            formData.append('waiter_id', waiterId);
 
 	            fetch('/api/v1/tables/' + tableId + '/waiter', {
