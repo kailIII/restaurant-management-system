@@ -27881,7 +27881,7 @@
 	        value: function componentDidMount() {
 	            var _this2 = this;
 
-	            fetch('/api/v1/waiters').then(function (response) {
+	            fetch('/api/v1/waiters?table_id=' + this.props.params.tableId).then(function (response) {
 	                return response.json();
 	            }).then(function (json) {
 	                _this2.setState({
@@ -27899,9 +27899,16 @@
 	                method: 'POST',
 	                body: formData
 	            }).then(function (response) {
-	                return response.json();
+	                switch (response.status) {
+	                    case 400:
+	                        return Promise.reject('Something went wrong!');
+	                    default:
+	                        return response.json();
+	                }
 	            }).then(function (json) {
 	                _reactRouter.browserHistory.goBack();
+	            }).catch(function (message) {
+	                alert(message);
 	            });
 	        }
 	    }, {
@@ -27914,12 +27921,13 @@
 	                method: 'POST',
 	                body: formData
 	            }).then(function (response) {
-	                if (response.status === 204) {
-	                    return true;
+	                switch (response.status) {
+	                    case 204:
+	                        _reactRouter.browserHistory.goBack();
+	                        break;
+	                    default:
+	                        alert('Something went wrong!');
 	                }
-	                return response.json();
-	            }).then(function (json) {
-	                _reactRouter.browserHistory.goBack();
 	            });
 	        }
 	    }, {
@@ -27936,19 +27944,27 @@
 	                    'Assign A Waiter To This Table'
 	                ),
 	                _react2.default.createElement(
-	                    'div',
-	                    { onClick: function onClick(event) {
-	                            return _this3.removeWaiterFromTable(_this3.props.params.tableId);
-	                        } },
-	                    'Unassigned'
+	                    'p',
+	                    null,
+	                    _react2.default.createElement(
+	                        'a',
+	                        { href: 'javascript:void(0)', onClick: function onClick(event) {
+	                                return _this3.removeWaiterFromTable(_this3.props.params.tableId);
+	                            } },
+	                        'Unassigned'
+	                    )
 	                ),
 	                this.state.waiters.map(function (waiter) {
 	                    return _react2.default.createElement(
-	                        'div',
-	                        { key: waiter.id, onClick: function onClick(event) {
-	                                return _this3.assignWaiterToTable(waiter.id, _this3.props.params.tableId);
-	                            } },
-	                        waiter.name
+	                        'p',
+	                        null,
+	                        _react2.default.createElement(
+	                            'a',
+	                            { key: waiter.id, href: 'javascript:void(0)', onClick: function onClick(event) {
+	                                    return _this3.assignWaiterToTable(waiter.id, _this3.props.params.tableId);
+	                                } },
+	                            waiter.name
+	                        )
 	                    );
 	                })
 	            );

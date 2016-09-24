@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router';
-import 'whatwg-fetch';
+import React from "react";
+import {Link} from "react-router";
+import "whatwg-fetch";
 
 class Manager extends React.Component {
     constructor(props) {
