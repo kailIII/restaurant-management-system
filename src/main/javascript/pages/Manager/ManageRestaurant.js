@@ -6,9 +6,10 @@ class ManagerRestaurant extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: null,
-            name: null,
-            tables: []
+            restaurant: {
+                name: null,
+                tables: []
+            }
         }
     }
 
@@ -19,9 +20,7 @@ class ManagerRestaurant extends React.Component {
             .then(response => response.json())
             .then(json => {
                 this.setState({
-                    id: json.id,
-                    name: json.name,
-                    tables: json.tables
+                    restaurant: json
                 })
             })
     }
@@ -29,10 +28,10 @@ class ManagerRestaurant extends React.Component {
     render() {
         return (
             <div>
-                <h1>{this.state.name}</h1>
+                <h1>{this.state.restaurant.name}</h1>
                 <h2>Table Assignments</h2>
                 <p>Select a table to update which waiter is assigned to it.</p>
-                {this.state.tables.map(table => (
+                {this.state.restaurant.tables.map(table => (
                     <div key={table.id}>
                         <Link to={`/manager/manage-table/${table.id}`}>{table.name} - {table.waiter === null ? 'unassigned' : table.waiter.name}</Link>
                     </div>

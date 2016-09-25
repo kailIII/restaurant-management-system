@@ -14,4 +14,9 @@ public class HomeController {
     public String manager() {
         return "index";
     }
+
+    @GetMapping("/waiter/**/*")
+    public String waiter() {
+        return "index";
+    }
 }

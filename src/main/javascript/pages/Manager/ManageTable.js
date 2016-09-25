@@ -69,7 +69,7 @@ class ManageTable extends React.Component {
                 <h1>Assign A Waiter To This Table</h1>
                 <p><a href="javascript:void(0)" onClick={event => this.removeWaiterFromTable(this.props.params.tableId)}>Unassigned</a></p>
                 {this.state.waiters.map(waiter => (
-                    <p><a key={waiter.id} href="javascript:void(0)" onClick={event => this.assignWaiterToTable(waiter.id, this.props.params.tableId)}>
+                    <p key={waiter.id}><a href="javascript:void(0)" onClick={event => this.assignWaiterToTable(waiter.id, this.props.params.tableId)}>
                         {waiter.name}
                     </a></p>
                 ))}

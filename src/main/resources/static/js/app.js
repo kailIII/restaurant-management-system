@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var _react = __webpack_require__(1);
 
@@ -74,20 +74,25 @@
 
 	var _ManageTable2 = _interopRequireDefault(_ManageTable);
 
+	var _Waiters = __webpack_require__(241);
+
+	var _Waiters2 = _interopRequireDefault(_Waiters);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	    _reactRouter.Router,
 	    { history: _reactRouter.browserHistory },
-	    _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: "/", component: _Home2.default }),
 	    _react2.default.createElement(
 	        _reactRouter.Route,
-	        { path: 'manager' },
+	        { path: "manager" },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _Manager2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'manage-restaurant/:restaurantId', component: _ManageRestaurant2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'manage-table/:tableId', component: _ManageTable2.default })
+	        _react2.default.createElement(_reactRouter.Route, { path: "manage-restaurant/:restaurantId", component: _ManageRestaurant2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: "manage-table/:tableId", component: _ManageTable2.default })
 	    ),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'waiter', component: _Waiter2.default })
+	    _react2.default.createElement(_reactRouter.Route, { path: "waiter", component: _Waiters2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: "waiter/:waiterId", component: _Waiter2.default })
 	), document.getElementById('app'));
 
 /***/ },
@@ -27112,7 +27117,7 @@
 /* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -27128,24 +27133,24 @@
 
 	exports.default = function () {
 	    return _react2.default.createElement(
-	        'div',
+	        "div",
 	        null,
 	        _react2.default.createElement(
-	            'p',
+	            "p",
 	            null,
 	            _react2.default.createElement(
 	                _reactRouter.Link,
-	                { to: '/manager' },
-	                'Manager'
+	                { to: "/manager" },
+	                "Manager"
 	            )
 	        ),
 	        _react2.default.createElement(
-	            'p',
+	            "p",
 	            null,
 	            _react2.default.createElement(
 	                _reactRouter.Link,
-	                { to: '/waiter' },
-	                'Waiter'
+	                { to: "/waiter" },
+	                "Waiter"
 	            )
 	        )
 	    );
@@ -27155,7 +27160,7 @@
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -27194,7 +27199,7 @@
 	    }
 
 	    _createClass(Manager, [{
-	        key: 'componentDidMount',
+	        key: "componentDidMount",
 	        value: function componentDidMount() {
 	            var _this2 = this;
 
@@ -27207,28 +27212,28 @@
 	            });
 	        }
 	    }, {
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
 	            return _react2.default.createElement(
-	                'div',
+	                "div",
 	                null,
 	                _react2.default.createElement(
-	                    'h1',
+	                    "h1",
 	                    null,
-	                    'Manager'
+	                    "Manager"
 	                ),
 	                _react2.default.createElement(
-	                    'p',
+	                    "p",
 	                    null,
-	                    'Select a Restaurant'
+	                    "Select a Restaurant"
 	                ),
 	                this.state.restaurants.map(function (restaurant) {
 	                    return _react2.default.createElement(
-	                        'p',
+	                        "p",
 	                        { key: restaurant.id },
 	                        _react2.default.createElement(
 	                            _reactRouter.Link,
-	                            { to: '/manager/manage-restaurant/' + restaurant.id },
+	                            { to: "/manager/manage-restaurant/" + restaurant.id },
 	                            restaurant.name
 	                        )
 	                    );
@@ -27685,7 +27690,7 @@
 /* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -27708,19 +27713,74 @@
 	var Waiter = function (_React$Component) {
 	    _inherits(Waiter, _React$Component);
 
-	    function Waiter() {
+	    function Waiter(props) {
 	        _classCallCheck(this, Waiter);
 
-	        return _possibleConstructorReturn(this, (Waiter.__proto__ || Object.getPrototypeOf(Waiter)).apply(this, arguments));
+	        var _this = _possibleConstructorReturn(this, (Waiter.__proto__ || Object.getPrototypeOf(Waiter)).call(this, props));
+
+	        _this.state = {
+	            restaurants: []
+	        };
+	        return _this;
 	    }
 
 	    _createClass(Waiter, [{
-	        key: 'render',
+	        key: "componentDidMount",
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            fetch("/api/v1/restaurants/").then(function (response) {
+	                return response.json();
+	            }).then(function (json) {
+	                _this2.setState({
+	                    restaurants: json
+	                });
+	            });
+	        }
+	    }, {
+	        key: "render",
 	        value: function render() {
+	            var _this3 = this;
+
 	            return _react2.default.createElement(
-	                'div',
+	                "div",
 	                null,
-	                'Waiter'
+	                _react2.default.createElement(
+	                    "h2",
+	                    null,
+	                    "Waiter"
+	                ),
+	                this.state.restaurants.map(function (restaurant) {
+	                    var tables = restaurant.tables.filter(function (table) {
+	                        return table.waiter !== null && table.waiter.id == _this3.props.params.waiterId;
+	                    });
+
+	                    var assignedTables = _react2.default.createElement(
+	                        "div",
+	                        null,
+	                        "Nothing assigned"
+	                    );
+	                    if (tables.length > 0) {
+	                        assignedTables = tables.map(function (table) {
+	                            return _react2.default.createElement(
+	                                "div",
+	                                { key: table.id },
+	                                table.name
+	                            );
+	                        });
+	                    }
+
+	                    return _react2.default.createElement(
+	                        "div",
+	                        { key: restaurant.id },
+	                        _react2.default.createElement(
+	                            "h2",
+	                            null,
+	                            restaurant.name
+	                        ),
+	                        assignedTables
+	                    );
+	                })
 	            );
 	        }
 	    }]);
@@ -27734,7 +27794,7 @@
 /* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -27767,60 +27827,59 @@
 	        var _this = _possibleConstructorReturn(this, (ManagerRestaurant.__proto__ || Object.getPrototypeOf(ManagerRestaurant)).call(this, props));
 
 	        _this.state = {
-	            id: null,
-	            name: null,
-	            tables: []
+	            restaurant: {
+	                name: null,
+	                tables: []
+	            }
 	        };
 	        return _this;
 	    }
 
 	    _createClass(ManagerRestaurant, [{
-	        key: 'componentDidMount',
+	        key: "componentDidMount",
 	        value: function componentDidMount() {
 	            var _this2 = this;
 
 	            var restaurantId = this.props.params.restaurantId;
 
-	            fetch('/api/v1/restaurants/' + restaurantId).then(function (response) {
+	            fetch("/api/v1/restaurants/" + restaurantId).then(function (response) {
 	                return response.json();
 	            }).then(function (json) {
 	                _this2.setState({
-	                    id: json.id,
-	                    name: json.name,
-	                    tables: json.tables
+	                    restaurant: json
 	                });
 	            });
 	        }
 	    }, {
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
 	            return _react2.default.createElement(
-	                'div',
+	                "div",
 	                null,
 	                _react2.default.createElement(
-	                    'h1',
+	                    "h1",
 	                    null,
-	                    this.state.name
+	                    this.state.restaurant.name
 	                ),
 	                _react2.default.createElement(
-	                    'h2',
+	                    "h2",
 	                    null,
-	                    'Table Assignments'
+	                    "Table Assignments"
 	                ),
 	                _react2.default.createElement(
-	                    'p',
+	                    "p",
 	                    null,
-	                    'Select a table to update which waiter is assigned to it.'
+	                    "Select a table to update which waiter is assigned to it."
 	                ),
-	                this.state.tables.map(function (table) {
+	                this.state.restaurant.tables.map(function (table) {
 	                    return _react2.default.createElement(
-	                        'div',
+	                        "div",
 	                        { key: table.id },
 	                        _react2.default.createElement(
 	                            _reactRouter.Link,
-	                            { to: '/manager/manage-table/' + table.id },
+	                            { to: "/manager/manage-table/" + table.id },
 	                            table.name,
-	                            ' - ',
+	                            " - ",
 	                            table.waiter === null ? 'unassigned' : table.waiter.name
 	                        )
 	                    );
@@ -27838,7 +27897,7 @@
 /* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -27877,11 +27936,11 @@
 	    }
 
 	    _createClass(ManageTable, [{
-	        key: 'componentDidMount',
+	        key: "componentDidMount",
 	        value: function componentDidMount() {
 	            var _this2 = this;
 
-	            fetch('/api/v1/waiters?table_id=' + this.props.params.tableId).then(function (response) {
+	            fetch("/api/v1/waiters?table_id=" + this.props.params.tableId).then(function (response) {
 	                return response.json();
 	            }).then(function (json) {
 	                _this2.setState({
@@ -27890,12 +27949,12 @@
 	            });
 	        }
 	    }, {
-	        key: 'assignWaiterToTable',
+	        key: "assignWaiterToTable",
 	        value: function assignWaiterToTable(waiterId, tableId) {
 	            var formData = new FormData();
 	            formData.append('waiter_id', waiterId);
 
-	            fetch('/api/v1/tables/' + tableId + '/waiter', {
+	            fetch("/api/v1/tables/" + tableId + "/waiter", {
 	                method: 'POST',
 	                body: formData
 	            }).then(function (response) {
@@ -27912,12 +27971,12 @@
 	            });
 	        }
 	    }, {
-	        key: 'removeWaiterFromTable',
+	        key: "removeWaiterFromTable",
 	        value: function removeWaiterFromTable(tableId) {
 	            var formData = new FormData();
 	            formData.append('_method', 'DELETE');
 
-	            fetch('/api/v1/tables/' + tableId + '/waiter', {
+	            fetch("/api/v1/tables/" + tableId + "/waiter", {
 	                method: 'POST',
 	                body: formData
 	            }).then(function (response) {
@@ -27931,36 +27990,36 @@
 	            });
 	        }
 	    }, {
-	        key: 'render',
+	        key: "render",
 	        value: function render() {
 	            var _this3 = this;
 
 	            return _react2.default.createElement(
-	                'div',
+	                "div",
 	                null,
 	                _react2.default.createElement(
-	                    'h1',
+	                    "h1",
 	                    null,
-	                    'Assign A Waiter To This Table'
+	                    "Assign A Waiter To This Table"
 	                ),
 	                _react2.default.createElement(
-	                    'p',
+	                    "p",
 	                    null,
 	                    _react2.default.createElement(
-	                        'a',
-	                        { href: 'javascript:void(0)', onClick: function onClick(event) {
+	                        "a",
+	                        { href: "javascript:void(0)", onClick: function onClick(event) {
 	                                return _this3.removeWaiterFromTable(_this3.props.params.tableId);
 	                            } },
-	                        'Unassigned'
+	                        "Unassigned"
 	                    )
 	                ),
 	                this.state.waiters.map(function (waiter) {
 	                    return _react2.default.createElement(
-	                        'p',
-	                        null,
+	                        "p",
+	                        { key: waiter.id },
 	                        _react2.default.createElement(
-	                            'a',
-	                            { key: waiter.id, href: 'javascript:void(0)', onClick: function onClick(event) {
+	                            "a",
+	                            { href: "javascript:void(0)", onClick: function onClick(event) {
 	                                    return _this3.assignWaiterToTable(waiter.id, _this3.props.params.tableId);
 	                                } },
 	                            waiter.name
@@ -27975,6 +28034,85 @@
 	}(_react2.default.Component);
 
 	exports.default = ManageTable;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(172);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SelectAWaiter = function (_Component) {
+	    _inherits(SelectAWaiter, _Component);
+
+	    function SelectAWaiter(props) {
+	        _classCallCheck(this, SelectAWaiter);
+
+	        var _this = _possibleConstructorReturn(this, (SelectAWaiter.__proto__ || Object.getPrototypeOf(SelectAWaiter)).call(this, props));
+
+	        _this.state = {
+	            waiters: []
+	        };
+	        return _this;
+	    }
+
+	    _createClass(SelectAWaiter, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            fetch('/api/v1/waiters/').then(function (response) {
+	                return response.json();
+	            }).then(function (json) {
+	                _this2.setState({
+	                    waiters: json
+	                });
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                this.state.waiters.map(function (waiter) {
+	                    return _react2.default.createElement(
+	                        'p',
+	                        { key: waiter.id },
+	                        _react2.default.createElement(
+	                            _reactRouter.Link,
+	                            { to: '/waiter/' + waiter.id },
+	                            waiter.name
+	                        )
+	                    );
+	                })
+	            );
+	        }
+	    }]);
+
+	    return SelectAWaiter;
+	}(_react.Component);
+
+	exports.default = SelectAWaiter;
 
 /***/ }
 /******/ ]);
