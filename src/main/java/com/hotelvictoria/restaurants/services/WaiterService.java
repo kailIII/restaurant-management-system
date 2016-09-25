@@ -7,6 +7,7 @@ import com.hotelvictoria.restaurants.repositories.WaiterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -28,7 +29,7 @@ public class WaiterService {
      * current restaurants. Waiters are disqualified if they have already been
      * assigned to 4 tables in that restaurant.
      */
-    public Iterable<Waiter> getAvailableWaiters(Restaurant restaurant) {
+    public List<Waiter> getAvailableWaiters(Restaurant restaurant) {
         return StreamSupport.stream(waiterRepository.findAll().spliterator(), false)
                 // Filter out all the waiters who have reached the 4 table limit
                 // per restaurant
@@ -41,7 +42,7 @@ public class WaiterService {
      * has been assigned to.
      */
     public Stream<Table> getWaiterTablesForRestaurant(Waiter waiter, Restaurant restaurant) {
-        return waiter.getTables().stream().filter(table -> table.getRestaurant().getId() == restaurant.getId());
+        return waiter.getTables().stream().filter(table -> table.getRestaurant().getId().equals(restaurant.getId()));
     }
 
     /**

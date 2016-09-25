@@ -16,7 +16,7 @@ public class Waiter {
 
     private String name;
 
-    @OneToMany(mappedBy = "waiter")
+    @OneToMany(mappedBy = "waiter", fetch = FetchType.EAGER)
     @JsonIgnoreProperties("waiter")
     private Collection<Table> tables;
 
