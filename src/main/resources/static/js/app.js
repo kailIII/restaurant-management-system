@@ -27207,8 +27207,18 @@
 	            fetch('/api/v1/restaurants').then(function (response) {
 	                return response.json();
 	            }).then(function (json) {
+	                // When React loads all the restaurants, we need to set a
+	                // sensible default value for the "restaurant chooser" dropdown.
+	                // This lets us render the correct list of tables.
 	                var selectedRestaurant = json[0].id;
+
+	                // If we have a selected restaurant stored in session storage,
+	                // e.g. we recently refreshed the page, then use that value if
+	                // it is still valid.
 	                if (sessionStorage.getItem('selected_restaurant')) {
+
+	                    // Check whether the selected restaurant stored in session
+	                    // storage is still valid.
 	                    var isRestaurantIdValid = json.find(function (restaurant) {
 	                        return restaurant.id === sessionStorage.getItem('selected_restaurant');
 	                    });
@@ -27222,12 +27232,17 @@
 	                    restaurants: json,
 	                    selectedRestaurant: selectedRestaurant
 	                }, function () {
+	                    // Add the selected restaurant to session storage to prevent page
+	                    // refreshes from clearing the manager's session
 	                    sessionStorage.setItem('selected_restaurant', selectedRestaurant);
 	                });
 	            });
 	        }
 
 	        /**
+	         * Event handler to indicate which restaurant the manager is currently
+	         * editing
+	         *
 	         * @param {Event} event
 	         */
 
@@ -27236,14 +27251,23 @@
 	        value: function updateSelectedRestaurant(event) {
 	            event.preventDefault();
 
+	            // The selected restaurant comes from the value of the dropdown box in
+	            // the header
 	            var selectedRestaurant = event.target.value;
 
 	            this.setState({
 	                selectedRestaurant: selectedRestaurant
 	            }, function () {
+	                // Add the selected restaurant to session storage to prevent page
+	                // refreshes from clearing the manager's session
 	                sessionStorage.setItem('selected_restaurant', selectedRestaurant);
 	            });
 	        }
+
+	        /**
+	         * Navigate from the manager page to the waiters page
+	         */
+
 	    }, {
 	        key: "switchToWaiter",
 	        value: function switchToWaiter() {
@@ -27254,6 +27278,8 @@
 	        value: function render() {
 	            var _this3 = this;
 
+	            // Render the selected restaurant's tables.
+	            // TODO: Move this logic to its own component
 	            var selectedRestaurant = this.state.restaurants.find(function (restaurant) {
 	                return restaurant.id === _this3.state.selectedRestaurant;
 	            });
@@ -27277,7 +27303,7 @@
 	                        )
 	                    );
 	                });
-	            } else {}
+	            }
 
 	            return _react2.default.createElement(
 	                "div",
@@ -27833,6 +27859,11 @@
 	                });
 	            });
 	        }
+
+	        /**
+	         * Navigate from the waiters page to the manager page
+	         */
+
 	    }, {
 	        key: "switchToManager",
 	        value: function switchToManager() {
@@ -27870,6 +27901,7 @@
 	                        "'s table assignments"
 	                    ) : null,
 	                    this.state.restaurants.map(function (restaurant) {
+	                        // Render all of the tables assigned to a waiter
 	                        var tables = restaurant.tables.filter(function (table) {
 	                            return table.waiter !== null && table.waiter.id == _this3.props.params.waiterId;
 	                        });
@@ -28068,6 +28100,14 @@
 	                });
 	            });
 	        }
+
+	        /**
+	         * Assign a waiter to a table.
+	         *
+	         * @param {string} waiterId
+	         * @param {string} tableId
+	         */
+
 	    }, {
 	        key: "assignWaiterToTable",
 	        value: function assignWaiterToTable(waiterId, tableId) {
@@ -28080,16 +28120,31 @@
 	            }).then(function (response) {
 	                switch (response.status) {
 	                    case 400:
+	                        // The HTTP status "400" is returned when a waiter has
+	                        // reached their maximum allowed number of table
+	                        // assignments for a specific restaurant. The
+	                        // requirements specified that this value is 4.
 	                        return Promise.reject('Something went wrong!');
 	                    default:
+	                        // If the HTTP status is anything other than "400" then
+	                        // assign that it was a successful request!
 	                        return response.json();
 	                }
 	            }).then(function (json) {
+	                // Redirect back to the "manage waiter" page
 	                _reactRouter.browserHistory.goBack();
 	            }).catch(function (message) {
+	                // TODO: Implement more detailed error messages
 	                alert(message);
 	            });
 	        }
+
+	        /**
+	         * Unassign a waiter from the specified table.
+	         *
+	         * @param {string} tableId
+	         */
+
 	    }, {
 	        key: "removeWaiterFromTable",
 	        value: function removeWaiterFromTable(tableId) {
@@ -28102,9 +28157,14 @@
 	            }).then(function (response) {
 	                switch (response.status) {
 	                    case 204:
+	                        // The HTTP status "204" is returned when we
+	                        // successfully remove a waiter from a table.
 	                        _reactRouter.browserHistory.goBack();
 	                        break;
 	                    default:
+	                        // We only care about the "204" HTTP status code. We can
+	                        // consider everything else to be an error.
+	                        // TODO: Implement more detailed error messages
 	                        alert('Something went wrong!');
 	                }
 	            });
@@ -28208,6 +28268,11 @@
 	                });
 	            });
 	        }
+
+	        /**
+	         * Navigate from the waiters page to the manager page
+	         */
+
 	    }, {
 	        key: 'switchToManager',
 	        value: function switchToManager() {

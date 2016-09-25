@@ -16,24 +16,37 @@ public class WaiterService {
     @Autowired
     WaiterRepository waiterRepository;
 
+    /**
+     * Get all of the waiters.
+     */
     public Iterable<Waiter> getAvailableWaiters() {
         return waiterRepository.findAll();
     }
 
+    /**
+     * Get all of the waiters that are still eligible to be assigned to the
+     * current restaurants. Waiters are disqualified if they have already been
+     * assigned to 4 tables in that restaurant.
+     */
     public Iterable<Waiter> getAvailableWaiters(Restaurant restaurant) {
         return StreamSupport.stream(waiterRepository.findAll().spliterator(), false)
-                .filter(waiter -> {
-                    return getWaiterTablesForRestaurant(waiter, restaurant).count() < 4;
-                })
+                // Filter out all the waiters who have reached the 4 table limit
+                // per restaurant
+                .filter(waiter -> getWaiterTablesForRestaurant(waiter, restaurant).count() < 4)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get all of the tables belonging to a particular restaurant that the waiter
+     * has been assigned to.
+     */
     public Stream<Table> getWaiterTablesForRestaurant(Waiter waiter, Restaurant restaurant) {
-        return waiter.getTables().stream().filter(table -> {
-            return table.getRestaurant().getId() == restaurant.getId();
-        });
+        return waiter.getTables().stream().filter(table -> table.getRestaurant().getId() == restaurant.getId());
     }
 
+    /**
+     * Add a new waiter to the database
+     */
     public Waiter addWaiter(String name) {
         return waiterRepository.save(new Waiter(name));
     }

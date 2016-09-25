@@ -25,6 +25,9 @@ class Waiter extends React.Component {
         })
     }
 
+    /**
+     * Navigate from the waiters page to the manager page
+     */
     switchToManager() {
         browserHistory.push('/manager');
     }
@@ -39,10 +42,11 @@ class Waiter extends React.Component {
                 <div className="content">
                     {this.state.waiter.name !== false ? <h2>{this.state.waiter.name}'s table assignments</h2> : null}
                     {this.state.restaurants.map(restaurant => {
+                        // Render all of the tables assigned to a waiter
                         let tables = restaurant.tables
                             .filter(table => table.waiter !== null && table.waiter.id == this.props.params.waiterId);
 
-                        let assignedTables = <div>Nothing assigned</div>
+                        let assignedTables = <div>Nothing assigned</div>;
                         if (tables.length > 0) {
                             assignedTables = tables.map(table => (
                                 <div key={table.id}>

@@ -18,7 +18,11 @@ public class TableService {
         return table.getWaiter();
     }
 
-    public Waiter assignWaiterToTable(Waiter waiter, Table table) throws Exception {
+    /**
+     * Assign a waiter to a table. A waiter can only be assigned to 4 tables for
+     * each restaurant.
+     */
+    public Waiter assignWaiterToTable(Waiter waiter, Table table) throws MaxAllowedTablesAssignedException {
         // This is a validation check to see if a waiter has already been
         // assigned to the maximum number of tables for the restaurant in
         // question. The limit is 4.
@@ -32,6 +36,9 @@ public class TableService {
         return tableRepository.save(table).getWaiter();
     }
 
+    /**
+     * Unassign a waiter from a table.
+     */
     public void removeWaiterFromTable(Table table) {
         table.setWaiter(null);
         tableRepository.save(table);

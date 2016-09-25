@@ -20,7 +20,7 @@ public class TableWaiterController {
     }
 
     @PostMapping("/api/v1/tables/{tableId}/waiter")
-    public Waiter postTableWaiter(@PathVariable("tableId") Table table, @RequestParam("waiter_id") Waiter waiter) throws Exception {
+    public Waiter postTableWaiter(@PathVariable("tableId") Table table, @RequestParam("waiter_id") Waiter waiter) throws MaxAllowedTablesAssignedException {
         return tableService.assignWaiterToTable(waiter, table);
     }
 

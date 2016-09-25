@@ -19,6 +19,9 @@ class Waiters extends Component {
             })
     }
 
+    /**
+     * Navigate from the waiters page to the manager page
+     */
     switchToManager() {
         browserHistory.push('/manager');
     }
