@@ -1,0 +1,28 @@
+* {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  margin: 0;
+  padding: 0;
+}
+
+.scope-selector {
+  float: left;
+  width: 50%;
+
+  .scope {
+    color: black;
+    display: block;
+    font-size: 21px;
+    height: 100vh;
+    line-height: 100vh;
+    text-align: center;
+    text-decoration: none;
+    transition: font 0.3s ease;
+    width: 100%;
+
+    &:hover {
+      background: #eee;
+      font-size: 27px;
+      text-decoration: underline;
+    }
+  }
+}

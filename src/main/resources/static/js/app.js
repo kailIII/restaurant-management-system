@@ -27136,21 +27136,21 @@
 	        "div",
 	        null,
 	        _react2.default.createElement(
-	            "p",
-	            null,
+	            "div",
+	            { className: "scope-selector" },
 	            _react2.default.createElement(
 	                _reactRouter.Link,
-	                { to: "/manager" },
-	                "Manager"
+	                { className: "scope", to: "/manager" },
+	                "I Am A Manager"
 	            )
 	        ),
 	        _react2.default.createElement(
-	            "p",
-	            null,
+	            "div",
+	            { className: "scope-selector" },
 	            _react2.default.createElement(
 	                _reactRouter.Link,
-	                { to: "/waiter" },
-	                "Waiter"
+	                { className: "scope", to: "/waiter" },
+	                "I Am A Waiter"
 	            )
 	        )
 	    );
