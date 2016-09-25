@@ -1,5 +1,5 @@
 * {
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -25,4 +25,39 @@
       text-decoration: underline;
     }
   }
+}
+
+.scope-switcher {
+  color: white;
+  display: inline-block;
+  line-height: 36px;
+  margin-left: 10px;
+}
+
+.header {
+  background: #00A1E0;
+  overflow: auto;
+  padding: 10px;
+
+  .title {
+    color: white;
+    float: left;
+    font-weight: normal;
+  }
+
+  .actions {
+    float: right;
+
+    .label {
+      color: white;
+    }
+
+    select {
+      height: 36px;
+    }
+  }
+}
+
+.content {
+  padding: 10px;
 }

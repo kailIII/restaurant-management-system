@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router';
+import {browserHistory, Link} from 'react-router';
 
-class SelectAWaiter extends Component {
+class Waiters extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,13 +19,26 @@ class SelectAWaiter extends Component {
             })
     }
 
+    switchToManager() {
+        browserHistory.push('/manager');
+    }
+
     render() {
         return (
-            <div>{this.state.waiters.map(waiter => (
-                <p key={waiter.id}><Link to={`/waiter/${waiter.id}`}>{waiter.name}</Link></p>
-            ))}</div>
+            <div>
+                <div className="header">
+                    <h1 className="title">Waiter</h1>
+                    <span className="scope-switcher" onClick={this.switchToManager}>(Switch To Manager)</span>
+                </div>
+                <div className="content">
+                    <p>Select your account to view your assigned tables.</p>
+                    {this.state.waiters.map(waiter => (
+                        <p key={waiter.id}><Link to={`/waiter/${waiter.id}`}>{waiter.name}</Link></p>
+                    ))}
+                </div>
+            </div>
         );
     }
 }
 
-export default SelectAWaiter;
+export default Waiters;

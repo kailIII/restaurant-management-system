@@ -27193,7 +27193,8 @@
 	        var _this = _possibleConstructorReturn(this, (Manager.__proto__ || Object.getPrototypeOf(Manager)).call(this, props));
 
 	        _this.state = {
-	            restaurants: []
+	            restaurants: [],
+	            selectedRestaurant: false
 	        };
 	        return _this;
 	    }
@@ -27206,38 +27207,125 @@
 	            fetch('/api/v1/restaurants').then(function (response) {
 	                return response.json();
 	            }).then(function (json) {
+	                var selectedRestaurant = json[0].id;
+	                if (sessionStorage.getItem('selected_restaurant')) {
+	                    var isRestaurantIdValid = json.find(function (restaurant) {
+	                        return restaurant.id === sessionStorage.getItem('selected_restaurant');
+	                    });
+
+	                    if (isRestaurantIdValid) {
+	                        selectedRestaurant = sessionStorage.getItem('selected_restaurant');
+	                    }
+	                }
+
 	                _this2.setState({
-	                    restaurants: json
+	                    restaurants: json,
+	                    selectedRestaurant: selectedRestaurant
+	                }, function () {
+	                    sessionStorage.setItem('selected_restaurant', selectedRestaurant);
 	                });
 	            });
+	        }
+
+	        /**
+	         * @param {Event} event
+	         */
+
+	    }, {
+	        key: "updateSelectedRestaurant",
+	        value: function updateSelectedRestaurant(event) {
+	            event.preventDefault();
+
+	            var selectedRestaurant = event.target.value;
+
+	            this.setState({
+	                selectedRestaurant: selectedRestaurant
+	            }, function () {
+	                sessionStorage.setItem('selected_restaurant', selectedRestaurant);
+	            });
+	        }
+	    }, {
+	        key: "switchToWaiter",
+	        value: function switchToWaiter() {
+	            _reactRouter.browserHistory.push('/waiter');
 	        }
 	    }, {
 	        key: "render",
 	        value: function render() {
+	            var _this3 = this;
+
+	            var selectedRestaurant = this.state.restaurants.find(function (restaurant) {
+	                return restaurant.id === _this3.state.selectedRestaurant;
+	            });
+
+	            var tables = _react2.default.createElement(
+	                "p",
+	                null,
+	                "No tables available for this restaurant"
+	            );
+	            if (selectedRestaurant !== undefined) {
+	                tables = selectedRestaurant.tables.map(function (table) {
+	                    return _react2.default.createElement(
+	                        "div",
+	                        { key: table.id },
+	                        _react2.default.createElement(
+	                            _reactRouter.Link,
+	                            { to: "/manager/manage-table/" + table.id },
+	                            table.name,
+	                            " - ",
+	                            table.waiter === null ? 'unassigned' : table.waiter.name
+	                        )
+	                    );
+	                });
+	            } else {}
+
 	            return _react2.default.createElement(
 	                "div",
 	                null,
 	                _react2.default.createElement(
-	                    "h1",
-	                    null,
-	                    "Manager"
+	                    "div",
+	                    { className: "header" },
+	                    _react2.default.createElement(
+	                        "h1",
+	                        { className: "title" },
+	                        "Manager"
+	                    ),
+	                    _react2.default.createElement(
+	                        "span",
+	                        { className: "scope-switcher", onClick: this.switchToWaiter },
+	                        "(Switch to Waiter)"
+	                    ),
+	                    this.state.restaurants.length > 0 ? _react2.default.createElement(
+	                        "div",
+	                        { className: "actions" },
+	                        _react2.default.createElement(
+	                            "span",
+	                            { className: "label" },
+	                            "Select a Restaurant: "
+	                        ),
+	                        _react2.default.createElement(
+	                            "select",
+	                            { onChange: this.updateSelectedRestaurant.bind(this), value: this.state.selectedRestaurant },
+	                            this.state.restaurants.map(function (restaurant) {
+	                                return _react2.default.createElement(
+	                                    "option",
+	                                    { key: restaurant.id, value: restaurant.id },
+	                                    restaurant.name
+	                                );
+	                            })
+	                        )
+	                    ) : null
 	                ),
 	                _react2.default.createElement(
-	                    "p",
-	                    null,
-	                    "Select a Restaurant"
-	                ),
-	                this.state.restaurants.map(function (restaurant) {
-	                    return _react2.default.createElement(
+	                    "div",
+	                    { className: "content" },
+	                    _react2.default.createElement(
 	                        "p",
-	                        { key: restaurant.id },
-	                        _react2.default.createElement(
-	                            _reactRouter.Link,
-	                            { to: "/manager/manage-restaurant/" + restaurant.id },
-	                            restaurant.name
-	                        )
-	                    );
-	                })
+	                        null,
+	                        "Select a table to update which waiter is assigned to it."
+	                    ),
+	                    tables
+	                )
 	            );
 	        }
 	    }]);
@@ -27702,6 +27790,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRouter = __webpack_require__(172);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27719,6 +27809,9 @@
 	        var _this = _possibleConstructorReturn(this, (Waiter.__proto__ || Object.getPrototypeOf(Waiter)).call(this, props));
 
 	        _this.state = {
+	            waiter: {
+	                name: false
+	            },
 	            restaurants: []
 	        };
 	        return _this;
@@ -27729,13 +27822,21 @@
 	        value: function componentDidMount() {
 	            var _this2 = this;
 
-	            fetch("/api/v1/restaurants/").then(function (response) {
+	            Promise.all([fetch("/api/v1/waiters/" + this.props.params.waiterId).then(function (response) {
 	                return response.json();
-	            }).then(function (json) {
+	            }), fetch("/api/v1/restaurants/").then(function (response) {
+	                return response.json();
+	            })]).then(function (json) {
 	                _this2.setState({
-	                    restaurants: json
+	                    waiter: json[0],
+	                    restaurants: json[1]
 	                });
 	            });
+	        }
+	    }, {
+	        key: "switchToManager",
+	        value: function switchToManager() {
+	            _reactRouter.browserHistory.push('/manager');
 	        }
 	    }, {
 	        key: "render",
@@ -27746,41 +27847,60 @@
 	                "div",
 	                null,
 	                _react2.default.createElement(
-	                    "h2",
-	                    null,
-	                    "Waiter"
+	                    "div",
+	                    { className: "header" },
+	                    _react2.default.createElement(
+	                        "h1",
+	                        { className: "title" },
+	                        "Waiter"
+	                    ),
+	                    _react2.default.createElement(
+	                        "span",
+	                        { className: "scope-switcher", onClick: this.switchToManager },
+	                        "(Switch To Manager)"
+	                    )
 	                ),
-	                this.state.restaurants.map(function (restaurant) {
-	                    var tables = restaurant.tables.filter(function (table) {
-	                        return table.waiter !== null && table.waiter.id == _this3.props.params.waiterId;
-	                    });
-
-	                    var assignedTables = _react2.default.createElement(
-	                        "div",
+	                _react2.default.createElement(
+	                    "div",
+	                    { className: "content" },
+	                    this.state.waiter.name !== false ? _react2.default.createElement(
+	                        "h2",
 	                        null,
-	                        "Nothing assigned"
-	                    );
-	                    if (tables.length > 0) {
-	                        assignedTables = tables.map(function (table) {
-	                            return _react2.default.createElement(
-	                                "div",
-	                                { key: table.id },
-	                                table.name
-	                            );
+	                        this.state.waiter.name,
+	                        "'s table assignments"
+	                    ) : null,
+	                    this.state.restaurants.map(function (restaurant) {
+	                        var tables = restaurant.tables.filter(function (table) {
+	                            return table.waiter !== null && table.waiter.id == _this3.props.params.waiterId;
 	                        });
-	                    }
 
-	                    return _react2.default.createElement(
-	                        "div",
-	                        { key: restaurant.id },
-	                        _react2.default.createElement(
-	                            "h2",
+	                        var assignedTables = _react2.default.createElement(
+	                            "div",
 	                            null,
-	                            restaurant.name
-	                        ),
-	                        assignedTables
-	                    );
-	                })
+	                            "Nothing assigned"
+	                        );
+	                        if (tables.length > 0) {
+	                            assignedTables = tables.map(function (table) {
+	                                return _react2.default.createElement(
+	                                    "div",
+	                                    { key: table.id },
+	                                    table.name
+	                                );
+	                            });
+	                        }
+
+	                        return _react2.default.createElement(
+	                            "div",
+	                            { key: restaurant.id },
+	                            _react2.default.createElement(
+	                                "h3",
+	                                null,
+	                                restaurant.name
+	                            ),
+	                            assignedTables
+	                        );
+	                    })
+	                )
 	            );
 	        }
 	    }]);
@@ -28061,13 +28181,13 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var SelectAWaiter = function (_Component) {
-	    _inherits(SelectAWaiter, _Component);
+	var Waiters = function (_Component) {
+	    _inherits(Waiters, _Component);
 
-	    function SelectAWaiter(props) {
-	        _classCallCheck(this, SelectAWaiter);
+	    function Waiters(props) {
+	        _classCallCheck(this, Waiters);
 
-	        var _this = _possibleConstructorReturn(this, (SelectAWaiter.__proto__ || Object.getPrototypeOf(SelectAWaiter)).call(this, props));
+	        var _this = _possibleConstructorReturn(this, (Waiters.__proto__ || Object.getPrototypeOf(Waiters)).call(this, props));
 
 	        _this.state = {
 	            waiters: []
@@ -28075,7 +28195,7 @@
 	        return _this;
 	    }
 
-	    _createClass(SelectAWaiter, [{
+	    _createClass(Waiters, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
 	            var _this2 = this;
@@ -28089,30 +28209,58 @@
 	            });
 	        }
 	    }, {
+	        key: 'switchToManager',
+	        value: function switchToManager() {
+	            _reactRouter.browserHistory.push('/manager');
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                this.state.waiters.map(function (waiter) {
-	                    return _react2.default.createElement(
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'header' },
+	                    _react2.default.createElement(
+	                        'h1',
+	                        { className: 'title' },
+	                        'Waiter'
+	                    ),
+	                    _react2.default.createElement(
+	                        'span',
+	                        { className: 'scope-switcher', onClick: this.switchToManager },
+	                        '(Switch To Manager)'
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'content' },
+	                    _react2.default.createElement(
 	                        'p',
-	                        { key: waiter.id },
-	                        _react2.default.createElement(
-	                            _reactRouter.Link,
-	                            { to: '/waiter/' + waiter.id },
-	                            waiter.name
-	                        )
-	                    );
-	                })
+	                        null,
+	                        'Select your account to view your assigned tables.'
+	                    ),
+	                    this.state.waiters.map(function (waiter) {
+	                        return _react2.default.createElement(
+	                            'p',
+	                            { key: waiter.id },
+	                            _react2.default.createElement(
+	                                _reactRouter.Link,
+	                                { to: '/waiter/' + waiter.id },
+	                                waiter.name
+	                            )
+	                        );
+	                    })
+	                )
 	            );
 	        }
 	    }]);
 
-	    return SelectAWaiter;
+	    return Waiters;
 	}(_react.Component);
 
-	exports.default = SelectAWaiter;
+	exports.default = Waiters;
 
 /***/ }
 /******/ ]);

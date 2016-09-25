@@ -1,12 +1,13 @@
 import React from "react";
-import {Link} from "react-router";
+import {browserHistory, Link} from "react-router";
 import "whatwg-fetch";
 
 class Manager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            restaurants: []
+            restaurants: [],
+            selectedRestaurant: false
         }
     }
 
@@ -14,18 +15,82 @@ class Manager extends React.Component {
         fetch('/api/v1/restaurants')
             .then(response => response.json())
             .then(json => {
+                let selectedRestaurant = json[0].id;
+                if (sessionStorage.getItem('selected_restaurant')) {
+                    let isRestaurantIdValid = json
+                        .find(restaurant => restaurant.id === sessionStorage.getItem('selected_restaurant'));
+
+                    if (isRestaurantIdValid) {
+                        selectedRestaurant = sessionStorage.getItem('selected_restaurant');
+                    }
+                }
+
                 this.setState({
-                    restaurants: json
+                    restaurants: json,
+                    selectedRestaurant: selectedRestaurant
+                }, ()=> {
+                    sessionStorage.setItem('selected_restaurant', selectedRestaurant);
                 })
             })
     }
 
+    /**
+     * @param {Event} event
+     */
+    updateSelectedRestaurant(event) {
+        event.preventDefault();
+
+        let selectedRestaurant = event.target.value;
+
+        this.setState({
+            selectedRestaurant: selectedRestaurant
+        }, () => {
+            sessionStorage.setItem('selected_restaurant', selectedRestaurant);
+        });
+    }
+
+    switchToWaiter() {
+        browserHistory.push('/waiter');
+    }
+
     render() {
+        let selectedRestaurant = this.state.restaurants
+            .find(restaurant => restaurant.id === this.state.selectedRestaurant);
+
+        let tables = <p>No tables available for this restaurant</p>
+        if (selectedRestaurant !== undefined) {
+            tables = selectedRestaurant.tables
+                .map(table => (
+                    <div key={table.id}>
+                        <Link to={`/manager/manage-table/${table.id}`}>{table.name} - {table.waiter === null ? 'unassigned' : table.waiter.name}</Link>
+                    </div>
+                ))
+        } else {
+
+        }
+
         return (
             <div>
-                <h1>Manager</h1>
-                <p>Select a Restaurant</p>
-                {this.state.restaurants.map(restaurant => <p key={restaurant.id}><Link to={`/manager/manage-restaurant/${restaurant.id}`}>{restaurant.name}</Link></p>)}
+                <div className="header">
+                    <h1 className="title">Manager</h1>
+                    <span className="scope-switcher" onClick={this.switchToWaiter}>(Switch to Waiter)</span>
+                    {this.state.restaurants.length > 0 ?
+                        <div className="actions">
+                            <span className="label">Select a Restaurant: </span>
+                                <select onChange={this.updateSelectedRestaurant.bind(this)} value={this.state.selectedRestaurant}>
+                                    {this.state.restaurants.map(restaurant => (
+                                        <option key={restaurant.id} value={restaurant.id}>{restaurant.name}</option>)
+                                    )}
+                                </select>
+                        </div>
+                        :
+                        null
+                    }
+                </div>
+                <div className="content">
+                    <p>Select a table to update which waiter is assigned to it.</p>
+                    {tables}
+                </div>
             </div>
         )
     }
